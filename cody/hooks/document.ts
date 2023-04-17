@@ -392,7 +392,7 @@ import {${eventActionFunc}} from "../action/${eventActionFunc}";
 
 function* onFetch${voName}(query: Fetch${voName}) {
     try {
-        const result: AxiosResponse<${voName}> = yield call(Api.executeQuery, '${voName}', query);
+        const result: AxiosResponse<${voName}> = yield call(Api.executeQuery, 'Get${voName}', query);
 
         if(result.status === 200) {
             yield put(${eventActionFunc}(result.data));
