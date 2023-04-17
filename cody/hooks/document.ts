@@ -96,13 +96,13 @@ export const onDocumentHook: CodyHook<Context> = async (document: Node, ctx: Con
     }
 
     if(stateIdentifier) {
-        const descContent = await compileStateDescription(document, metadata, stateIdentifier, config, defs, ctx);
+        const descContent = await compileStateDescription(document, metadata, stateIdentifier, dirNamespace, config, defs, ctx);
         if(isCodyError(descContent)) {
             return descContent;
         }
 
         const voDescFilename = `${voName}.desc.ts`;
-        const voDescFile = ctx.feFolder + `/model/values/${voDescFilename}`;
+        const voDescFile = ctx.feFolder + `/model/values${dirNamespace}/${voDescFilename}`;
 
         if(shouldIgnoreFile(voDescFile)) {
             successDetails = successDetails + `⏩️ Skipped ${voDescFile} due to // @cody-ignore\n`;
@@ -508,12 +508,13 @@ const getMandatoryFilterProp = (queryName: string, config: EngineConfig): string
     return schema.required[0];
 }
 
-const compileStateDescription = async (document: Node, metadata: DocumentMetadata, stateIdentifier: string, config: EngineConfig, defs: SchemaDefinitions, ctx: Context): Promise<string | CodyResponse> => {
+const compileStateDescription = async (document: Node, metadata: DocumentMetadata, stateIdentifier: string, dirNamespace: string, config: EngineConfig, defs: SchemaDefinitions, ctx: Context): Promise<string | CodyResponse> => {
     const voName = nodeNameToPascalCase(document);
     const schema = await dereferenceSchema(metadata.schema, defs);
     const uiSchema = metadata.uiSchema? 'uiSchema: ' + JSON.stringify(metadata.uiSchema, null, 8) : '';
+    const coreImport = dirNamespace.split('/').map(s => s.length > 0 ? '..' : '').join('/');
 
-    return `import {StateDescription} from "../../core/types";
+    return `import {StateDescription} from "../..${coreImport}/core/types";
 
 export const ${voName}Schema = ${JSON.stringify(schema, null, 4)};
 
