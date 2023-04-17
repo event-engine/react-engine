@@ -1,0 +1,15 @@
+{
+  "aggregates": {
+  },
+  "commands": {
+  },
+  "events": {
+  },
+  "queries": {
+  },
+  "sagas": [
+  ],
+  "reducers": [],
+  "pages": {
+  }
+}

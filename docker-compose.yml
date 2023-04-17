@@ -1,0 +1,34 @@
+version: '2.4'
+
+services:
+  cody:
+    image: node-dev:latest
+    restart: "no"
+    build:
+      context: .
+      dockerfile: env/docker/app/Dockerfile
+      target: node-dev
+    volumes:
+      - ./cody:/app
+      - ./app:/dist
+    user: ${UID}
+    ports:
+    - 3322:3000
+    env_file:
+      - app.env
+    command: npm run watch
+
+  ee-app:
+    image: node-dev:latest
+    build:
+      context: .
+      dockerfile: env/docker/app/Dockerfile
+      target: node-dev
+    volumes:
+      - ./app:/app
+    user: ${UID}
+    ports:
+      - 3323:3000
+    env_file:
+      - app.env
+    command: yarn start
